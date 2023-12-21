@@ -117,3 +117,5 @@ def get_user_fname():
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
     get_index()
+    app.run(debug=True)
+
