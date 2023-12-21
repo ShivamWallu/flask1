@@ -1,1 +1,7 @@
 Flask==3.0.0
+Flask-SQLAlchemy==3.0.0
+llama-index==0.5.6
+langchain==0.0.148
+requests==2.26.0
+python-dotenv==0.19.1
+SQLAlchemy==1.4.50
