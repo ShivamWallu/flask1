@@ -1,3 +1,4 @@
+# app.py
 
 import os
 from flask import Flask, request, jsonify
@@ -14,6 +15,7 @@ load_dotenv()
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI', 'mysql+mysqlconnector://root:@localhost:3306/stagedb')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# Set the OpenAI API key
 os.environ["OPENAI_API_KEY"] = "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"
 
 db = SQLAlchemy(app)
@@ -39,10 +41,10 @@ def construct_index(directory_path):
     service_context = ServiceContext.from_defaults(llm_predictor=llm_predictor, prompt_helper=prompt_helper)
     index = GPTSimpleVectorIndex.from_documents(documents, service_context=service_context)
 
-    index.save_to_disk('index.json')
+    index.save_to_disk('data.json')
 
 def get_index():
-    if not os.path.exists('index.json'):
+    if not os.path.exists('data.json'):
         construct_index("Context")
 
 @app.route('/ask_ai', methods=['GET', 'POST'])
@@ -51,7 +53,7 @@ def ask_ai():
         if request.is_json:
             query = request.json.get('query')
             if query:
-                index = GPTSimpleVectorIndex.load_from_disk('index.json')
+                index = GPTSimpleVectorIndex.load_from_disk('data.json')
                 response = index.query(query)
                 return jsonify({'response': response.response})
             else:
@@ -92,7 +94,7 @@ def test_ask_ai():
 def ask_ai_function(query):
     try:
         if query:
-            index = GPTSimpleVectorIndex.load_from_disk('index.json')
+            index = GPTSimpleVectorIndex.load_from_disk('data.json')
             response = index.query(query)
             return {'response': response.response}
         else:
